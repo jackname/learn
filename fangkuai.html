@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<script type="text/javascript" src="jquery.js"></script>
+<style>
+#tcs table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	
+}
+#tcs table td{
+	width: 20px;
+	height: 20px;
+	border: 1px solid #ccc;
+}
+.shiwu{
+	width: 10px;
+	height: 10px;
+	background: red;
+}
+</style>
+<script>
+window.onload=function(){
+var rnum=20,lnum=15; //定义活动区域的宽和高
+var html=[],mubiao,time,speek=500,n=1;
+var tcs=$('#tcs');
+
+html.push("<table>"); 
+for(var i=0;i<rnum;i++){
+	html.push('<tr>');
+	for(var j=0;j<lnum;j++){
+		html.push('<td></td>');
+	}
+	html.push('</tr>');
+}
+html.push("</table>"); 
+tcs.append(html.join(""));
+
+
+moxing={
+	fangkuai:function(x,y){
+		mubiao=$('#tcs tr:eq('+(y-1)+') td:eq('+x+')');
+		mubiao.removeAttr('style');
+		mubiao.next().removeAttr('style');
+		mubiao.parent().prev().find('td').eq(x).removeAttr('style');
+		mubiao.parent().prev().find('td').eq(x).next().removeAttr('style');
+		mubiao=$('#tcs tr:eq('+y+') td:eq('+x+')');
+		mubiao.css('background','#000');
+		mubiao.next().css('background','#000');
+		mubiao.parent().prev().find('td').eq(x).css('background','#000');
+		mubiao.parent().prev().find('td').eq(x).next().css('background','#000');
+	},
+	shugang:function(){
+			mubiao=$('#tcs tr:eq(1) td:eq(6)');
+			mubiao.css('background','#000');
+		if(true){
+			mubiao.next().css('background','#000');
+			mubiao.prev().css('background','#000');
+			mubiao.next().next().css('background','#000');
+		}else{
+			mubiao.parent().prev().find('td').eq(6).css('background','#000');
+			mubiao.parent().next().find('td').eq(6).css('background','#000');
+			mubiao.parent().next().next().find('td').eq(6).css('background','#000');
+		}		
+	},
+	tu:function(){
+			mubiao=$('#tcs tr:eq(1) td:eq(6)');
+			mubiao.css('background','#000');
+			mubiao.next().css('background','#000');
+			mubiao.prev().css('background','#000');
+			mubiao.parent().prev().find('td').eq(6).css('background','#000');
+			
+	},
+	shuyou:function(){
+			mubiao=$('#tcs tr:eq(1) td:eq(6)');	
+			mubiao.css('background','#000');
+			mubiao.parent().prev().find('td').eq(6).css('background','#000');
+			mubiao.parent().next().find('td').eq(6).css('background','#000');
+			mubiao.parent().next().find('td').eq(6).next().css('background','#000');
+	},
+	shuzuo:function(){
+			mubiao=$('#tcs tr:eq(1) td:eq(6)');	
+			mubiao.css('background','#000');
+			mubiao.parent().prev().find('td').eq(6).css('background','#000');
+			mubiao.parent().next().find('td').eq(6).css('background','#000');
+			mubiao.parent().next().find('td').eq(6).prev().css('background','#000');
+	}
+}
+
+function move(){
+		time=setInterval(function(){
+		if(mubiao.parent().index()==rnum-1){
+		clearInterval(time);
+		moxing.tu(5,1);
+		}
+		moxing.fangkuai(6,n);
+		n++;
+	}, speek); 
+}
+move();
+
+//键盘事件
+$(document).keydown(function(event){ 
+	if(event.keyCode==37&&key!=39){ //为37时（即左方面键）
+		mover(37);
+	}else if (event.keyCode==39&&key!=37){ //为39时（即右方面键）
+		mover(39);
+	}else if (event.keyCode==40&&key!=38){ //为40时（即下方面键）
+		mover(40);
+	} 
+}); 
+
+
+
+
+
+
+
+}
+</script>
+</head>
+
+<body>
+<div id="tcs">
+	
+</div>
+</body>
+</html>

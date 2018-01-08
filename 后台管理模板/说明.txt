@@ -1,0 +1,25 @@
+实用Bootstrap响应式后台管理系统模板Mac，适配不同的设备，界面非常大气简洁，因为类似苹果
+风格所以叫Mac，图标全部采用fontawesome，众多的UI组件以及后台应用基础功能，Mac基于
+Bootstrap3，还采用了其他众多的插件，还是值得下载使用的。
+
+特性：
+1.很酷的图表统计
+2.滑动导航和下拉列表
+3.众多的插件页面
+4.日历支持
+5.很炫的滑动条
+6.拥有注册,登录,帮助页面
+7.众多的UI组件和工具
+8.表格的支持
+9.专业的UI界面
+
+浏览器支持：
+Firefox 5+
+Google Chrome 14+
+Internet Explorer 9
+Opera 11
+Safari 5
+
+Bootstrap兼容：
+Bootstrap 2.2.x
+Bootstrap 3.0.x

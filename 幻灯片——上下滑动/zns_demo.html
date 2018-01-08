@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>淘宝幻灯片上下滑动效果</title>
+<link href="css.css" rel="stylesheet" type="text/css" />
+<script src="jquery.js" ></script>
+<script>
+$(document).ready(function() {
+	var nn=0;
+    $('.play ol li').click(function() {
+		 nn=$(this).index();
+          cleft();
+	});
+	function cleft(){
+		 $('.play ol li').removeClass('active');
+		 $('.play ol li').eq(nn).addClass('active');
+		 var itop= nn * -$('.play ol li').height()*10;
+		 $('.play ul').animate({top:itop});
+	}	
+	function next(){
+		 nn++;
+		 if(nn==$('.play ol li').length){
+			nn=0;	 
+		 }
+		 cleft();
+	}
+	var timer= setInterval(next,2000);
+	$('.play').mousemove(function(){
+		clearInterval(timer);
+	});
+	$('.play').mouseout(function(){
+		timer= setInterval(next,2000);
+	});
+});
+</script>
+</head>
+
+<body>
+<div class="play" id="play">
+    <ol>
+    	<li class="active">1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+    </ol>
+	<ul>
+		<li><a href="#"><img src="images/1.jpg" alt="广告一" /></a></li>
+		<li><a href="#"><img src="images/2.jpg" alt="广告二" /></a></li>
+		<li><a href="#"><img src="images/3.jpg" alt="广告三" /></a></li>
+		<li><a href="#"><img src="images/4.jpg" alt="广告四" /></a></li>
+		<li><a href="#"><img src="images/5.jpg" alt="广告五" /></a></li>
+	</ul>
+</div>
+</body>
+</html>

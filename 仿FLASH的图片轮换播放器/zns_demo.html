@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>仿FLASH的图片轮换效果 —— www.zhinengshe.com 智能社</title>
+<link rel="stylesheet" type="text/css" href="zns_style.css">
+<script src="jquery.js"></script>
+<script>
+$(document).ready(function() {
+	//左右按钮显示
+    $('.mark_left').mouseover(function() {
+        $('.prev').stop(false,false).animate({opacity:'100'});
+    });
+	$('.mark_left').mouseout(function() {
+        $('.prev').stop(false,false).animate({opacity:'0'});
+    });
+	$('.prev').mouseover(function() {
+        $('.prev').stop(false,false).animate({opacity:'100'});
+    });
+	$('.mark_right').mouseover(function() {
+        $('.next').stop(false,false).animate({opacity:'100'});
+    });
+	$('.mark_right').mouseout(function() {
+        $('.next').stop(false,false).animate({opacity:'0'});
+    });
+	$('.next').mouseover(function() {
+        $('.next').stop(false,false).animate({opacity:'100'});
+    });
+	
+	
+	//小图与大图同步
+	var n=0;
+	var d=1;
+	$('.small_pic ul li').click(function() {
+		if(n==$(this).index())return;
+        n=$(this).index();
+		 next();
+    });
+	$('.small_pic ul').width($('.small_pic ul li').length*($('.small_pic ul li').width()+10));
+	function  next(){
+		$('.small_pic ul li').stop(false,false).fadeTo("slow", 0.3);
+		//$('.big_pic li').css('z-index','')
+		$('.small_pic ul li').eq(n).stop(true,false).fadeTo("slow", 1);
+		$('.big_pic li').eq(n).css('z-index',d).height(0).animate({'height':'320'});
+		d++;
+		if(n==0){
+			$('.small_pic ul').animate({left:0});
+		}else if(n==$('.small_pic ul li').length-1){
+			$('.small_pic ul').animate({left: -(n-2)*($('.small_pic ul li').width()+10)});
+		}else{
+			$('.small_pic ul').animate({left: -(n-1)*($('.small_pic ul li').width()+10)});
+		}
+	}
+	//往左
+	$('.prev').click(function() {
+        n--;
+		if(n==-1){
+			n=$('.small_pic ul li').length-1;
+		}
+         next();
+    });
+	//往右
+	$('.next').click(function() {
+		n++;
+		if(n==$('.small_pic ul li').length){
+			n=0;
+		}
+         next();
+    });
+	//自动
+	function nx(){
+	 	n++;
+		if(n==$('.small_pic ul li').length){
+			n=0;
+		}
+         next();
+	}
+	
+	//小图淡入
+	$('.small_pic ul li').mouseover(function() {
+        $(this).stop(true,false).fadeTo("slow", 1);
+    });
+	$('.small_pic ul li').mouseout(function() {
+		if(n==$(this).index())return;
+        $(this).stop(false,false).fadeTo("slow", 0.3);
+    });
+	
+	//定时器
+	var timer = setInterval(nx,2000);
+	$(".play").mouseover(function() {
+        clearInterval(timer);
+    });
+	$(".play").mouseout(function() {
+        timer = setInterval(nx,2000);
+    });
+	
+});
+
+</script>
+</head>
+
+<body>
+<div id="playimages" class="play">
+    <ul class="big_pic">
+
+		<div class="prev"></div>
+		<div class="next"></div>
+
+		<div class="text">加载图片说明……</div>
+		<div class="length">计算图片数量……</div>
+		
+		<a class="mark_left" href="javascript:;"></a>
+		<a class="mark_right" href="javascript:;"></a>
+		<div class="bg"></div>
+		
+        <li style="z-index:1;"><img src="images/1.jpg" /></li>
+        <li><img src="images/2.jpg" /></li>
+        <li><img src="images/3.jpg" /></li>
+        <li><img src="images/4.jpg" /></li>
+        <li><img src="images/5.jpg" /></li>
+        <li><img src="images/6.jpg" /></li>
+    </ul>
+    <div class="small_pic">
+        <ul style="width:390px;">
+            <li style="filter: 100; opacity: 1;"><img src="images/1.jpg" /></li>
+            <li><img src="images/2.jpg" /></li>
+            <li><img src="images/3.jpg" /></li>
+            <li><img src="images/4.jpg" /></li>
+            <li><img src="images/5.jpg" /></li>
+            <li><img src="images/6.jpg" /></li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

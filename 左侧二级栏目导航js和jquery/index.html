@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>第七元素</title>
+<link href="css/aline.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://www.3ms8.com/skin/default/js/jquery.js"></script>
+<script>
+// $(document).ready(function() {
+// 	var timer;
+//     $('.menu1>ul>li>ul').hide();
+// 	$('.menu1>ul>li,.menu1>ul>li>ul>li').mouseover(function(){
+// 		clearTimeout(timer);
+// 		$('.menu1>ul>li>ul').not(this).hide();
+// 		var oheight=$(this).find('li').length*$(this).height(),
+// 		aindex=$(this).index(),
+// 		eindex=$('.menu1>ul>li').length,
+// 		iheight=(eindex-aindex)*$(this).height();
+// 		$('.menu1>ul>li>ul').height(oheight);
+// 		if(iheight<oheight){
+// 			$(this).find('ul').css({'bottom':'0','top':'inherit'});
+// 			$(this).find('ul').show();	
+// 		}else{
+// 			$(this).find('ul').show();	
+// 			}
+// 	});
+// 	$('.menu1>ul>li,.menu1>ul>li>ul>li').mouseout(function() {
+// 		 var $this=$(this);
+// 		timer=setTimeout(function(){
+// 			if($this.find('ul').length>0){
+// 				$this.find('ul').hide();
+// 			}else{
+// 				$(this).parent().parent().find('ul').hide();
+// 			}
+// 		},500)
+//     });
+// });
+window.onload=function(){
+    var oid=document.getElementById('menu'),
+    eul=oid.getElementsByTagName('ul')[0],
+    aul=eul.getElementsByTagName('ul'),
+    ali=oid.getElementsByTagName('li');
+
+    for(var i=0; i<aul.length;i++){
+      aul[i].style.display='none';
+    }
+    for(var i=0;i<ali.length;i++){
+        if(ali[i].getElementsByTagName('li').length!=0){
+            var timer;
+            ali[i].onmouseover=function(){
+                var hideUl=this.getElementsByTagName('ul')[0];
+                var hideUlHeight=this.clientHeight*hideUl.getElementsByTagName('li').length;
+                var iheight=window.innerHeight-this.offsetTop-oid.offsetTop-this.clientHeight;
+                clearTimeout(timer);
+                for(var i=0; i<aul.length;i++){
+                    aul[i].style.display='none';
+                }
+                if(iheight<hideUlHeight){
+                    hideUl.style.display='block';
+                    hideUl.style.bottom='0';
+                    hideUl.style.top='initial';
+                }else{
+                    hideUl.style.display='block';
+                }
+                hideUl.mouseover=function(){
+                    clearTimeout(timer);
+                }
+            };
+            ali[i].onmouseout=function(){
+                var athis=this;
+                timer=setTimeout(function(){
+                    athis.getElementsByTagName('ul')[0].style.display='none';
+                },500)
+            }
+        }
+    }
+
+
+}
+</script>
+</head>
+
+<body>
+  <div class="menu1" id="menu">
+    <ul>
+      <li><a href="#">首页</a></li>
+      <li><a href="#">第7元素</a>
+        <ul>
+          <li><a href="#">二级1</a></li>
+          <li><a href="#">二级1</a></li>
+          <li><a href="#">二级1</a></li>
+         
+        </ul>
+      </li>
+      <li><a href="#">7系</a>
+        <ul>
+          <li><a href="#">二级2</a></li>
+          <li><a href="#">二级2</a></li>
+          <li><a href="#">二级2</a></li>
+          <li><a href="#">二级2</a></li>
+        </ul>
+      </li>
+      <li><a href="#">7天创世纪</a>
+        <ul>
+          <li><a href="#">二级3</a></li>
+          <li><a href="#">二级3</a></li>
+          <li><a href="#">二级3</a></li>
+        </ul>
+      </li>
+      <li><a href="#">第7区</a>
+        <ul>
+          <li><a href="#">二级4</a></li>
+          <li><a href="#">二级4</a></li>
+           <li><a href="#">二级1</a></li>
+          <li><a href="#">二级1</a></li>
+          <li><a href="#">二级1</a></li>
+          <li><a href="#">二级4</a></li>
+        </ul>
+      </li>
+       <li><a href="#">第7区</a>
+        <ul>
+          <li><a href="#">二级4</a></li>
+          <li><a href="#">二级4</a></li>
+           <li><a href="#">二级1</a></li>
+        </ul>
+      </li>
+       <li><a href="#">第7区</a>
+        <ul>
+          <li><a href="#">二级4</a></li>
+          <li><a href="#">二级4</a></li>
+           <li><a href="#">二级1</a></li>
+          <li><a href="#">二级1</a></li>
+          <li><a href="#">二级1</a></li>
+          <li><a href="#">二级4</a></li>
+          <li><a href="#">二级4</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

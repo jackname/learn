@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<script type="text/javascript" src="jquery.js"></script>
+<style>
+#tcs table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	
+}
+#tcs table td{
+	width: 10px;
+	height: 10px;
+	border: 1px solid #ccc;
+}
+.shiwu{
+	width: 10px;
+	height: 10px;
+	background: red;
+}
+</style>
+<script>
+function Tcs(){
+	var _this=this;
+	this.rnum=40;
+	this.lnum=60; //定义活动区域的宽和高
+	this.speek=100; //速度
+	this.html=[];
+	this.key;
+	this.timer;
+	this.tcsnum;
+	this.wbarr=[];
+	this.num=2; //尾巴
+	this.mubiao;
+	this.jiazuobiao;
+	this.mubiao;
+	//键盘事件
+	this.keydown=function(){ 
+		$(document).keydown(function(event){
+			if(event.keyCode==37&&this.key!=39){ //为37时（即左方面键）
+				_this.mover(37);
+			}else if (event.keyCode==39&&this.key!=37){ //为39时（即右方面键）
+				_this.mover(39);
+			}else if (event.keyCode==40&&this.key!=38){ //为40时（即下方面键）
+				_this.mover(40);
+			}else if (event.keyCode==38&&this.key!=40){ //为38时（即上方面键）
+				_this.mover(38);
+			}
+		})
+	}; 
+}
+
+Tcs.prototype.createTable=function(){
+	this.html.push("<table>"); 
+	for(var i=0;i<this.rnum;i++){
+		this.html.push('<tr>');
+		for(var j=0;j<this.lnum;j++){
+			this.html.push('<td></td>');
+		}
+		this.html.push('</tr>');
+	}
+	this.html.push("</table>"); 
+	$('#tcs').append(this.html.join("")); 
+}
+
+Tcs.prototype.random1=function(){ //随机出生点
+	$('table tr').eq(this.rnum*this.sjnum()).find('td').eq(this.lnum*this.sjnum()).css('background','#000');
+	$('table tr').eq(this.rnum*this.sjnum()).find('td').eq(this.lnum*this.sjnum()).addClass('shiwu');
+}
+
+
+//随机数
+Tcs.prototype.sjnum=function(){
+	var a=parseInt(Math.random()*10),b=parseInt(Math.random()*10),c;
+	c=parseInt(a+''+b)/100;
+	return c;
+}
+
+//移动
+Tcs.prototype.mover=function(n){
+		var _this=this;
+		this.mubiao=$('table tr').find('td[style]');
+		var mubiao=this.mubiao;
+		if(this.key!=n){ 
+			clearInterval(this.timer);
+		this.timer=setInterval(function(n){
+			//判断是否撞墙壁
+			console.debug(mubiao.index());
+			if (mubiao.index()<0) {
+				clearInterval(this.timer);
+				 if(confirm("你挂了!是否重新进行一局")){ 
+				 	location.reload();
+				 }else {
+				 	return false;
+				 }
+				 
+				return false;
+				
+				
+			}else if (mubiao.parent().index()<0) {
+				clearInterval(this.timer);
+				 if(confirm("你挂了!是否重新进行一局")){ 
+				 	location.reload();
+				 }else {
+				 	return false;
+				 }
+				 
+				return false;
+			};
+
+			//吃到食物
+			if(mubiao.index()==$('.shiwu').index()&&mubiao.parent().index()==$('.shiwu').parent().index()){
+				num++;
+				$('table tr td[class="shiwu"]').removeClass('shiwu');
+				$('table tr').eq(this.rnum*this.sjnum()).find('td').eq(this.lnum*this.sjnum()).addClass('shiwu');
+			}
+
+			//储存数组
+			this.wbarr.push(mubiao);
+
+			tcsnum=$('table tr').find('td[style]').length;
+
+			//根据方向移动改变
+			if (n==39) {
+				mubiao.next().css('background','#000');
+				mubiao=mubiao.next();
+			}else if(n==37){
+				mubiao.prev().css('background','#000');
+				mubiao=mubiao.prev();
+			}else if(n==38){
+				mubiao.parent().prev().find('td').eq(mubiao.index()).css('background','#000');
+				mubiao=mubiao.parent().prev().find('td').eq(mubiao.index());
+			}else if(n==40){
+				mubiao.parent().next().find('td').eq(mubiao.index()).css('background','#000');
+				mubiao=mubiao.parent().next().find('td').eq(mubiao.index());
+			}
+
+			//判断撞自己
+			for (var i=0;i<this.wbarr.length;i++) {
+				if(this.wbarr[i].index()==mubiao.index()&&this.wbarr[i].parent().index()==mubiao.parent().index()){
+					clearInterval(this.timer);
+					 if(confirm("你挂了!是否重新进行一局")){ 
+					 	location.reload();
+					 }else {
+					 	return false;
+					 }
+					 
+					return false;
+					}
+				
+			};
+
+			//删除尾巴
+			if(this.tcsnum>this.num){
+				this.jiazuobiao=this.wbarr.shift();
+				this.jiazuobiao.removeAttr('style');
+			}
+
+
+			//尾巴提高速度
+				if(this.num==10){
+					this.speek=80;
+				}else if(this.num==20){
+					this.speek=70;
+				}else if(this.num==30){
+					this.speek=60;
+				}else if(this.num==40){
+					this.speek=50;
+				}else if(this.num==50){
+					this.speek=40;
+				}
+				// console.debug(speek);
+}, this.speek); 
+		this.key=n;
+
+		}
+}
+
+
+window.onload=function ()
+{
+	var tcsn=new Tcs();
+	tcsn.createTable();
+	tcsn.random1();
+	tcsn.keydown();
+};
+</script>
+</head>
+
+<body>
+<div id="tcs">
+	
+</div>
+</body>
+</html>

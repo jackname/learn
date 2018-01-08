@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<script type="text/javascript" src="jquery.js"></script>
+<style>
+#div1 {width:10px; height:10px; background:red; position:absolute;}
+#div3 {width:10px; height:10px; background:red; position:absolute;}
+#div2 {width:400px; height:300px; background:#CCC; position:relative;}
+#div2 div{width:10px; height:10px; background:red; position:absolute;}
+</style>
+<script>
+window.onload=function(){
+//定义
+var odiv=$('#div1'), n=odiv.css('left'),time,move=0,move2=0,key,offset;
+var owdiv2=$('#div2').width()-odiv.width();
+var ohdiv2=$('#div2').height()-odiv.height();
+var num=32; //贪吃蛇的尾巴数量  4为1个 5为2个
+var pos=[],abs=[];
+var zb;
+for (var i=0;i<num; i++) {
+	$('#div2').append($('<div id="div'+(i+3)+'"></div>'));
+};
+
+//键盘事件
+$(document).keydown(function(event){ 
+	if(event.keyCode == 37 &&key!=39){ //为37时（即左方面键）
+	 	clearInterval(time);
+		mover(37);
+		key=37;
+	}else if (event.keyCode == 39&&key!=37){ //为39时（即右方面键）
+		clearInterval(time);
+		mover(39);
+		key=39;
+	}else if (event.keyCode == 40&&key!=38){ //为40时（即下方面键）
+		clearInterval(time);
+		mover(40);
+		key=40;
+	}else if (event.keyCode == 38&&key!=40){ //为38时（即上方面键）
+		clearInterval(time);
+		mover(38);
+		key=38;
+	}  
+}); 
+
+//尾部跟随头部
+function gensui(obj,n){
+	setTimeout(function(){
+		$('#div'+(n+3)).css({'left':obj.left,'top':obj.top,});
+	}, (n+1)*100);
+}
+
+//贪吃蛇移动
+function mover(n){
+	time=setInterval(function(){
+		   //  for(var i=0;i<num;i++){
+				 // pos[i]=$('#div'+(i+3)).position();
+				 // abs[i]=bulin(pos[i].left)+''+bulin(pos[i].top);
+
+		   //  }
+			if (n==39) {
+				move++;
+				odiv.css('left',move);
+			}else if(n==37){
+				move--;
+				odiv.css('left',move);
+			}else if(n==38){
+				move2--;
+				odiv.css('top',move2);
+			}else if(n==40){
+				move2++;
+				odiv.css('top',move2);
+			}
+			offset = odiv.position();
+			for(var i=0;i<num;i++){
+				gensui(offset,i);
+			}
+		    // zb=bulin(offset.left)+''+bulin(offset.top);
+
+				for(var i=0;i<num;i++){
+					pos[i]=$('#div'+(i+3)).position();
+					console.debug(offset.left+':'+$('#div4').position().left)
+					if(offset.left==pos[i].left&&offset.top==pos[i].top){
+						alert('你挂了');
+						clearInterval(time);
+						return false;
+					}
+				};
+			// console.debug(bulin(offset.left)+''+bulin(offset.top));
+			// alert(odiv2);
+			if (offset.left<0||offset.left>owdiv2) {
+				alert('你挂了');
+				clearInterval(time);
+				return false;
+			}else if (offset.top<0||offset.top>ohdiv2) {
+				alert('你挂了');
+				clearInterval(time);
+				return false;
+			};
+	 }, 10); 
+}
+// function bulin(a){
+//     a=parseInt(a);
+// 	if(a<=9){
+// 		a='00'+a;
+// 	}else if(10<=a&&a<100){
+// 		a='0'+a;
+// 	}else if(a>99){
+// 		a=''+a;
+// 	}
+// 	return a;
+// }
+
+	 
+}
+</script>
+</head>
+
+<body>
+<div id="div2">
+	<div id="div1"></div>
+</div>
+</body>
+</html>

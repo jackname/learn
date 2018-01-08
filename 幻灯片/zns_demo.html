@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>幻灯片效果</title>
+    <link href="css.css" rel="stylesheet" type="text/css"/>
+    <script src="jquery.js"></script>
+    <script>
+        window.onload = function () {
+            var
+                    ali = $(".play ul li"),
+                    aol = $('.play ol li'),
+                    oul = $('.play ul'),
+                    speed = 2000;
+
+            slide(ali, aol, oul, speed);
+        }
+
+        function slide(ali, aol, oul, speed) {
+            var nn = 0,
+                    aw = ali.eq(0).clone();
+            oul.append(aw);
+            var nw = (ali.length + 1) * ali.width(),
+                    oulwidth = oul.width(nw);
+            for (var i = 0; i < aol.length + 1; i++) {
+                aol.eq(i).attr("nx", i);
+            }
+            aol.click(function () {
+                for (var i = 0; i < aol.length; i++) {
+                    if ($('.play ol li').eq(i).attr("class") == 'active') {
+                        var nx = $('.play ol li').eq(i).attr("nx");
+                    }
+                }
+
+                nn = $(this).index();
+                if (nn == 0 && nx == aol.length - 1) {
+                    nn = aol.length;
+                } else if (nn == 1 && nx == 0) {
+                    oul.css("left", 0);
+                } else if ($(this).attr('nx') == aol.length - 1 && nx == 0) {
+                    var oleft = -(ali.length) * ali.width();
+                    oul.css("left", oleft);
+                }
+                cleft();
+                if (nn == aol.length) {
+                    aol.eq(0).addClass('active');
+                }
+                ;
+            });
+            function cleft() {
+                aol.removeClass('active');
+                aol.eq(nn).addClass('active');
+                var itop = nn * -ali.width();
+                oul.animate({left: itop});
+            }
+
+            function next() {
+                nn++;
+                if (nn == (aol.length + 1)) {
+                    nn = 1;
+                    oul.css("left", 0);
+                }
+                cleft();
+                if (nn == aol.length) {
+                    aol.eq(0).addClass('active');
+                }
+                ;
+            }
+
+            var timer = setInterval(next, speed);
+            oul.parent().mousemove(function () {
+                clearInterval(timer);
+            });
+            oul.parent().mouseout(function () {
+                timer = setInterval(next, speed);
+            });
+        }
+    </script>
+</head>
+
+<body>
+<div class="play" id="play">
+    <ol>
+        <li class="active">1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+    </ol>
+    <ul>
+        <li><a href="#"><img src="images/1.jpg" alt="广告一"/></a></li>
+        <li><a href="#"><img src="images/2.jpg" alt="广告二"/></a></li>
+        <li><a href="#"><img src="images/3.jpg" alt="广告三"/></a></li>
+        <li><a href="#"><img src="images/4.jpg" alt="广告四"/></a></li>
+        <li><a href="#"><img src="images/5.jpg" alt="广告五"/></a></li>
+    </ul>
+
+</div>
+
+</body>
+</html>

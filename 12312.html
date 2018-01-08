@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<style>
+    table{
+	    margin : 0 auto;
+	    padding : 0;
+			
+	}
+	td{
+	    background : #FFC;	
+		width : 9px;
+		height : 9px;
+	}
+	#score{
+	    position : absolute;
+		margin : 0 auto;
+	    top : 100px;
+	}
+	#score0{
+	    color : 'red';
+	}
+</style>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+<body onload = "Frame.init()">
+<div id="score">您的分数<div id="score0"></div></div>
+<div id="frame"></div>
+</body>
+<script type="text/javascript"/>
+	//屏蔽游览器的事件差异的工具函数
+	//单例
+	EventUtil = {  
+        addHandler : function(element, type, handler) {  
+            if(element.addEventListener) {  
+                element.addEventListener(type, handler, false);  
+            }else if(element.attachEvent) {  
+                element.attachEvent("on" + type, handler)  
+            }else {  
+                element["on" + type] = handler;  
+            }  
+        },  
+        removeHandler : function(element, type, handler){  
+            if(element.removeEventListener) {  
+                element.removeEventListener(type, handler, false);  
+            }else if(element.detachEvent) {  
+                element.detachEvent("on" + type,handler);  
+            }else {  
+                element["on" + type]=null;  
+             }  
+        },  
+        getEvent : function(event) {  
+            return event ? event : window.event;  
+        },  
+        getTarget:function(event) {  
+            return event.target || event.srcElement;  
+        } 
+    }
+	//棋盘对象，
+	//单例，状态不需改变
+	Frame = {
+	      init : function() {
+		    //表格模拟的二维数组的行数和列数
+			var rows = 40;
+			var cols = 60;
+			
+			var table = document.createElement('table');
+			for(var i = 0; i < rows; i++) {
+			    var tr = table.insertRow(i);
+				for(var j = 0; j<cols; j++) {
+				    var td = tr.insertCell(j);
+				}
+			}
+			//table.border = '1px' ;
+			var div = document.getElementById('frame');
+			div.appendChild(table);
+			Snake.table = table;
+			FoodFactory.table = table;
+			var food = FoodFactory.factory();
+			food.show();
+			food = null;
+			EventUtil.addHandler(document, 'keydown', function(e){
+			    e = EventUtil.getEvent(e);
+				Snake.setDir(e.keyCode);
+			});
+		}
+	}
+	//蛇对象
+	//单例
+    Snake = {
+	    //分数
+		score : 0,
+		//蛇的身体,'重绘'的依据
+		//初始时长度为三
+		body : [
+			       {x:4, y:4}
+			    ],
+		//蛇头方向
+		//蛇身设置的依据
+		direction : 'right',
+		//根据蛇头设置方向
+		//此函数绑定为监听,注意this指向的是谁
+		timer : null,
+		setDir : function(code) {
+			switch(code) {
+			    case 37 : {
+				    if(Snake.direction == 'right')
+					    break;
+					Snake.direction = 'left';
+					break;
+				}
+				case 38 : {
+				    if(Snake.direction == 'bottom')
+					    break;
+					Snake.direction = 'top';
+					break;
+				}
+				case 39 : {
+				    if(Snake.direction == 'left')
+					    break;
+					Snake.direction = 'right';
+					break;
+				}
+				case 40 : {
+				    if(Snake.direction == 'top')
+					    break;
+					Snake.direction = 'bottom';
+					break;
+				}
+			}
+		},
+ 		//移动
+		move : function() {
+		    Snake.timer = setInterval(function() {
+			    Snake.step();     
+			}, 300);
+		},
+		step : function() {
+		    var msg = this.check();
+			var state = msg.state;
+			var _x = msg.x;
+		    var _y = msg.y;
+			if(state == 'fail') {
+			    alert('笨蛋，你输了');
+				clearInterval(this.timer);
+				return;
+			}else if(state == 'move') {
+				//先进行擦除操作
+				this.earse();
+				//头出尾进
+				this.body.pop();
+				this.body.unshift({x:_x, y:_y});
+				this.draw();
+			 }else if(state == 'eat') {
+			    this.earse();
+				this.body.unshift({x:_x, y:_y})
+
+
+				//把此点与身体融为一色
+				this.table.rows[_x].cells[_y].style.baackground = 'black';
+				this.draw();
+			    //再产生一个食物
+				var food = FoodFactory.factory();
+				food.show();
+				food = null;
+			    this.setScore();
+			}
+		},
+		//碰撞检测
+		check : function() {
+		    //检测的状态有3种，fail,eat,move
+			var state = 'fail';
+			//找出下一步
+			var point = this.nextStep();         
+		    //_x _y为下一步的蛇头坐标，预先进行检测
+			var _x = point.x;
+			var _y = point.y;
+            
+			//越界处理
+			if(_x < 0 || _y < 0 || _x >= 60 || _y >= 40) {
+				return {state:state, x:_x, y:_y};
+			}
+			//碰到自己失败
+			for(var i = 0; i<this.body.length; i++ ) {
+			    if(_x == this.body[i].x && _y == this.body[i].y) {
+					return {state:state, x:_x, y:_y};
+				}
+			}
+			//可行点
+			if(this.table.rows[_y].cells[_x].style.backgroundColor == ''){
+			    state = 'move';
+				return {state:state, x:_x, y:_y};
+			//都不满足没有返回时，必然就是有食物的点了
+			}else {
+			    state = 'eat';
+				return {state:state, x:_x, y:_y};
+			}
+		},
+		//根据蛇头方向，算出下一步蛇头的坐标
+		nextStep : function() {
+			//蛇头的当前坐标
+			var x = this.body[0].x;
+			var y = this.body[0].y;
+			if(this.direction == 'right') {
+				++x;
+				return {x:x, y:y};
+			}
+			if(this.direction == 'left') {
+			    --x;
+			    return {x:x, y:y};
+			}
+			if(this.direction == 'bottom') {
+			    ++y;
+			    return {x:x, y:y};
+			}
+			if(this.direction == 'top') {
+			    --y;
+			    return {x:x, y:y};
+			}
+		
+		},
+		draw : function() {
+		    for(var i = 0; i < this.body.length; i++) {
+			    var x = this.body[i].x;
+				var y = this.body[i].y;
+			    this.table.rows[y].cells[x].style.backgroundColor = 'black';
+			}
+		},
+		earse : function() {
+		    for(var i = 0; i < this.body.length; i++) {
+			    var x = this.body[i].x;
+				var y = this.body[i].y;
+				this.table.rows[y].cells[x].style.backgroundColor = '';
+			}
+		},
+		setScore : function() {
+		    document.getElementById('score0').innerHTML = (this.body.length - 1) * 10;
+		}
+	}
+	
+	function Food(x, y){
+	    this.x = x;
+		this.y = y;
+	}
+	Food.prototype.show = function(){
+	    FoodFactory.table.rows[this.x].cells[this.y].style.backgroundColor = 'green'; 
+	}
+	FoodFactory = {
+	    factory : function() {
+			return new Food(Math.floor(Math.random() * 60), Math.floor(Math.random() * 40));
+		}
+	}
+	Snake.move();
+</script>
+</html>
+

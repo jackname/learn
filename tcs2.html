@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<script type="text/javascript" src="jquery.js"></script>
+<style>
+#tcs table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	
+}
+#tcs table td{
+	width: 10px;
+	height: 10px;
+	border: 1px solid #ccc;
+}
+.shiwu{
+	width: 10px;
+	height: 10px;
+	background: red;
+}
+</style>
+<script>
+window.onload=function(){
+var rnum=40,lnum=60; //定义活动区域的宽和高
+var speek=100; //速度
+var html=[];
+var tcs=$('#tcs');
+var key,time,tcsnum;
+var wbarr=[];
+var num=122; //尾巴
+// var kaiguan=true;//防止重复点击的开关
+html.push("<table>"); 
+for(var i=0;i<rnum;i++){
+	html.push('<tr>');
+	for(var j=0;j<lnum;j++){
+		html.push('<td></td>');
+	}
+	html.push('</tr>');
+}
+html.push("</table>"); 
+tcs.append(html.join(""));
+
+//随机出生点
+$('table tr').eq(rnum*sjnum()).find('td').eq(lnum*sjnum()).css('background','#000');
+$('table tr').eq(rnum*sjnum()).find('td').eq(lnum*sjnum()).addClass('shiwu');
+
+//随机数
+function sjnum(){
+	var a=parseInt(Math.random()*10),b=parseInt(Math.random()*10),c;
+	c=parseInt(a+''+b)/100;
+	return c;
+}
+
+//
+var mubiao=$('table tr').find('td[style]');
+//键盘事件
+$(document).keydown(function(event){ 
+	if(event.keyCode==37&&key!=39){ //为37时（即左方面键）
+		mover(37);
+	}else if (event.keyCode==39&&key!=37){ //为39时（即右方面键）
+		mover(39);
+	}else if (event.keyCode==40&&key!=38){ //为40时（即下方面键）
+		mover(40);
+	}else if (event.keyCode==38&&key!=40){ //为38时（即上方面键）
+		mover(38);
+	}  
+}); 
+
+
+//移动
+function mover(n){
+		mubiao;
+		
+
+
+		if(key!=n){ //为37时（即左方面键）
+			clearInterval(time);
+		time=setInterval(function(){
+			//判断是否撞墙壁
+			if (mubiao.index()<0) {
+				clearInterval(time);
+				 if(confirm("你挂了!是否重新进行一局")){ 
+				 	location.reload();
+				 }else {
+				 	return false;
+				 }
+				 
+				return false;
+				
+				
+			}else if (mubiao.parent().index()<0) {
+				clearInterval(time);
+				 if(confirm("你挂了!是否重新进行一局")){ 
+				 	location.reload();
+				 }else {
+				 	return false;
+				 }
+				 
+				return false;
+			};
+
+			//吃到食物
+			if(mubiao.index()==$('.shiwu').index()&&mubiao.parent().index()==$('.shiwu').parent().index()){
+				num++;
+				$('table tr td[class="shiwu"]').removeClass('shiwu');
+				$('table tr').eq(rnum*sjnum()).find('td').eq(lnum*sjnum()).addClass('shiwu');
+			}
+
+			//储存数组
+			wbarr.push(mubiao);
+
+			tcsnum=$('table tr').find('td[style]').length;
+
+			//根据方向移动改变
+			if (n==39) {
+				mubiao.next().css('background','#000');
+				mubiao=mubiao.next();
+			}else if(n==37){
+				mubiao.prev().css('background','#000');
+				mubiao=mubiao.prev();
+			}else if(n==38){
+				mubiao.parent().prev().find('td').eq(mubiao.index()).css('background','#000');
+				mubiao=mubiao.parent().prev().find('td').eq(mubiao.index());
+			}else if(n==40){
+				mubiao.parent().next().find('td').eq(mubiao.index()).css('background','#000');
+				mubiao=mubiao.parent().next().find('td').eq(mubiao.index());
+			}
+
+			//判断撞自己
+			for (var i=0;i<wbarr.length;i++) {
+				if(wbarr[i].index()==mubiao.index()&&wbarr[i].parent().index()==mubiao.parent().index()){
+					clearInterval(time);
+					 if(confirm("你挂了!是否重新进行一局")){ 
+					 	location.reload();
+					 }else {
+					 	return false;
+					 }
+					 
+					return false;
+					}
+				
+			};
+
+			//删除尾巴
+			if(tcsnum>num){
+			var jiazuobiao=wbarr.shift();
+				jiazuobiao.removeAttr('style');
+			}
+
+
+			//尾巴提高速度
+				if(num==10){
+					speek=80;
+				}else if(num==20){
+					speek=70;
+				}else if(num==30){
+					speek=60;
+				}else if(num==40){
+					speek=50;
+				}else if(num==50){
+					speek=40;
+				}
+				console.debug(speek);
+		}, speek); 
+		key=n;
+
+		}
+}
+
+
+
+
+
+}
+</script>
+</head>
+
+<body>
+<div id="tcs">
+	
+</div>
+</body>
+</html>
